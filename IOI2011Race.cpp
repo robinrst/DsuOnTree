@@ -25,15 +25,16 @@ using namespace __gnu_pbds;
 #define          lgn 25
 #define          endl '\n'
 #define          sc second
-#define          N (int)2e5+5
+#define          NN (int)2e5+5
 #define          pb push_back
 #define          mod 1000000007
 #define          ld long double
 #define          vi vector<int>
 #define          eb emplace_back
 #define          vpii vector<pii>
-#define          mii map<int,int>
 #define          int long long 
+#define          mii map<int,int>
+#define          mp make_pair
 #define          pii pair<int,int>
 #define          pq priority_queue
 #define          BLOCK (int)sqrt(N)
@@ -72,9 +73,9 @@ const int INF = 0x3f3f3f3f3f3f3f3f;
  
 int n,m,k,q,ans;
 string s;
-vpii adj[N];
-int in[N],out[N],sz[N],Dep[N],sumNow[N],id[N];
-bool big[N];
+vpii adj[NN];
+int in[NN],out[NN],sz[NN],Dep[NN],sumNow[NN],id[NN];
+bool big[NN];
 mii path;
  
 void dfsSize(int  i = 0, int p = -1)
@@ -106,14 +107,15 @@ void add(int i, int x)
 	else
 	{
 		int xx = path[sum];
-		if( xx == 0 ) xx = INF;
+		if( xx == 0 ) xx = inf;
 		path[sum] = min( Dep[i] , xx );
 	}
 }
  
 void dfs(int i = 0 , int p = -1, bool keep = 0)
 {
-	int mx = -1, bigChild = -1;
+	int mx = -1;
+	int bigChild = -1;
  
 	for( auto j : adj[i] )
 	{
@@ -133,11 +135,11 @@ void dfs(int i = 0 , int p = -1, bool keep = 0)
 		{
 			fo(k,in[j.f],out[j.f]+1)
 			{
-				int now =  k + 2*sumNow[i] - sumNow[z];
+				int now =  m + 2*sumNow[i] - sumNow[z];
 				if( path[now] )
 				{
 					ans = min( ans , path[now] + (Dep[z] - Dep[i]) - Dep[i] );
-					// Minus Dep[i] in the end is because we have that added in path[now ]
+					// Minus Dep[i] in the end is because we have that added in path[now]
 				}
 			}
 			fo(k,in[j.f],out[j.f]+1) add( z , 1);
@@ -145,9 +147,14 @@ void dfs(int i = 0 , int p = -1, bool keep = 0)
 	}
  
 	add(i ,1);
-  
-	if( path[ sumNow[i] + m ] ) ans = min( ans , path[ sumNow[i] + m ] - Dep[i] ); // Minus Dep[i] beacuse that is already added in path[ sumNow[i] + k]
  
+	// for( auto j : path ) cout << j.f << '-' << j.sc << endl;
+	// cout << endl;
+ 
+	if( path[ sumNow[i] + m ] ) ans = min( ans , path[ sumNow[i] + m ] - Dep[i] ); // Minus Dep[i] beacuse that is already added in path[ sumNow[i] + k]
+ 	
+ 	if( ~bigChild ) big[bigChild] = 0;
+	
 	if( !keep )
 	{
 		fo(k,in[i],out[i]+1) add(z , -1);
@@ -157,7 +164,7 @@ void dfs(int i = 0 , int p = -1, bool keep = 0)
 void go()
 {
 	cin >> n >> m;
-	ans = INF;
+	ans = inf;
 	fo(i,0,n-1)
 	{
 		int u , v , w;
@@ -165,13 +172,26 @@ void go()
 		adj[u].pb({ v, w} );
 		adj[v].pb({ u , w} );
 	}
+    
 	dfsSize();
 	dfs();
  
-	if( ans == INF ) ans = -1;
+	if( ans == inf ) ans = -1;
+	
 	cout << ans << endl;
  
 }
+ 
+// int best_path (int N, int K, int H[][2], int L[])
+// {
+//     n = N, m = K;
+//     fo(i,0,n-1)
+//     {
+//         adj[H[i][0]].pb(mp(H[i][1], L[i]));
+//         adj[H[i][1]].pb(mp(H[i][0], L[i]));
+//     }
+//     return go();
+// }
  
 int32_t main()
 {
